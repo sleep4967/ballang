@@ -1,4 +1,4 @@
-export type Product = {
+export type ProductProps = {
   brand: { id: number; nameEn: string; nameKr: string };
   brandId: number;
   deliveryType: string;

@@ -1,33 +1,41 @@
-"use client"
 
-import { Product } from "@/types/type.api";
+import { BrandIdProps } from "@/types/type.brandId";
+import { BrandProps } from "@/types/type.brands";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import HomePage from "../page";
+import HeaderLayout from "../layout/HeaderLayout";
 
+async function Brands(props: BrandIdProps) {
+  const response = await axios.get("https://api.ballang.yoojinyoung.com/brands");
+  const brands = response.data.result;
+  console.log(brands[0]);
 
-function Brand() {
-  const [products, setProducts] = useState<Product[]>([]);
-  useEffect(() => {
-    (async() => {
-      const response = await axios.get("https://api.ballang.yoojinyoung.com/products")
-      setProducts(response.data.result)
-      console.log(response.data.result[0])
-      
-    }
-    )()
-    
-  }, [])
+  async (props: {brand: BrandIdProps}) => {
+    const response = await axios.get(`https://api.ballang.yoojinyoung.com/brands/${props.brand.searchParams.brandId}`);
+    const brandId = response.data.result;
+    console.log(brandId)
+    console.log(props)
+  }
+  console.log(props.searchParams.brandId);
+
   return (
+    <main className="h-screen">
+      <h2 className="text-center mt-10 text-2xl">BRAND</h2>
+      <p className="mt-4 cursor-pointer text-center">All</p>
+      <ul className="grid grid-cols-6 mt-4 ml-20">
 
-    <div>
-      <ul className="flex">
-
-      {products.map((product) => (
-        <li key={product.brand.id}>{product.brand.nameKr}</li>
+      {brands.map((brand: BrandProps) => (
+        <li key={brand.id} className="mt-4 mb-4">
+          <Link href={`/brands?brandId=${brand.id}`}>
+            {brand.nameKr}
+          </Link>
+          </li>
       ))}
+      <HeaderLayout />
       </ul>
-    </div>
+    </main>
   )
 }
 
-export default Brand
+export default Brands
